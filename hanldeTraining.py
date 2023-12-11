@@ -119,7 +119,7 @@ def test_compare(min_close, dist):
             
 
 if __name__ == '__main__':
-    dist = 4
+    dist = 1
     DA_DICT = read_in_image(TRAINING_MIN, TRAINING_MAX)
     min_close = train_compare(DA_DICT, dist)
     
