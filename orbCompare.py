@@ -75,7 +75,7 @@ def train_compare(f, s, dist, tolerance):
         s2 = sFinger
         close.append(percent_match(fFinger,sFinger,dist))
     match, nonMatch = np.average(close), np.average(notClose)
-    return match-((match-nonMatch)*tolerance*3) #Why 3? with tolerances from 0 to 1, multiplying by 3 makes the FAR and FRR cross paths usually
+    return match-((match-nonMatch)*tolerance*2) #Why 2? with tolerances from 0 to 1, multiplying by 3 makes the FAR and FRR cross paths usually
 
 def FRR(f,s,min_match, dist):
     pAss, fAil = 0,0
