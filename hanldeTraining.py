@@ -60,15 +60,21 @@ def count_close(finger1, finger2, distance):
     return count
 
 # Takes in the training dictionary of fingers and returns an average of close features
-def train_compare(DA_DICT, dist):
+def train_compare(DA_DICT, dist, tolerance):
     close = []
+    notClose = []
+    s2 = None
     for key in DA_DICT.keys():
         if key[0] == "f":
             f = DA_DICT[key]
             s = DA_DICT[f's{key[1:]}']
-            print(key[1:])
+            if s2 != None: 
+                notClose.append(count_close(f,s2, dist))
+            s2 = s
+            # print(key[1:])
             close.append(count_close(f,s, dist))
-    return round(np.average(close))
+    match, nonMatch = np.average(close), np.average(notClose)
+    return math.floor(match-((match - nonMatch)*tolerance*3))
 
 # Takes in the testing dictionary of fingers and a min_close value. 
 # No return but prints out the FRR
@@ -110,19 +116,19 @@ def FAR(comp_dict, min_close, dist):
                 pAss += 1
     print(f'FAR = {fAil/(pAss+fAil)*100}%')
             
-#Distance is 
-def test_compare(min_close, dist):
-    comp_dict = read_in_image(TESTING_MIN, TESTING_MAX)
+
+def test_compare(comp_dict, min_close, dist):
     FRR(comp_dict,min_close,dist)
     FAR(comp_dict,min_close,dist)
             
             
+def test(DA_DICT, comp_dict, tolerance, dist = 10):
+    min_close = train_compare(DA_DICT, dist, tolerance)
+    print("Tolerance = " + str(tolerance))
+    test_compare(comp_dict, min_close, dist)
 
 if __name__ == '__main__':
-    dist = 1
     DA_DICT = read_in_image(TRAINING_MIN, TRAINING_MAX)
-    min_close = train_compare(DA_DICT, dist)
-    
-    #With the default parameters, min_close is 6
-    
-    test_compare(min_close, dist)
+    comp_dict = read_in_image(TESTING_MIN, TESTING_MAX)
+    for tol in range (0,11):
+        test(DA_DICT, comp_dict, tol/10, dist=15)
